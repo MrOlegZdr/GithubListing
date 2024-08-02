@@ -1,6 +1,6 @@
 # GitHub Repositories Listing
 
-Application provides a list of GitHub repositories that are not forks for the specified user.
+Application provides a list of GitHub repositories that are NOT FORKS for the specified user.
 
 ## How it works
 
@@ -26,7 +26,6 @@ http://localhost:8080/api/github/repositories/{username}
         "owner": {
             "login": "OwnerLogin"
         },
-        "fork": false,
         "branches": [
             {
                 "name": "BranchName",
