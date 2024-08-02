@@ -2,6 +2,7 @@ package com.home.project.githublisting.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -9,6 +10,8 @@ public class Repository {
 
 	private String name;
 	private Owner owner;
+	
+	@JsonIgnore
 	private boolean fork;
 	private List<Branch> branches;
 
