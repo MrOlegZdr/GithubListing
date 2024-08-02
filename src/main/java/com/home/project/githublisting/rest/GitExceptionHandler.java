@@ -19,4 +19,12 @@ public class GitExceptionHandler {
 		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
 	}
 
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<Map<String, Object>> handleException(Exception ex) {
+		Map<String, Object> errorResponse = new HashMap<>();
+		errorResponse.put("status", HttpStatus.BAD_REQUEST.value());
+		errorResponse.put("message", ex.getMessage());
+		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+	}
+	
 }
