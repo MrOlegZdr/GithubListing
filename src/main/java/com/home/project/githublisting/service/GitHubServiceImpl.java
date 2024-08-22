@@ -1,7 +1,9 @@
 package com.home.project.githublisting.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -30,23 +32,13 @@ public class GitHubServiceImpl implements GitHubService {
 		try {
 
 			String url = String.format("%s/users/%s/repos", gitHubApiUrl, username);
-
 			Repository[] repositories = restTemplate.getForObject(url, Repository[].class);
-			List<Repository> nonForkRepositories = new ArrayList<>();
 
-			if (repositories != null) {
-				for (Repository repo : repositories) {
-					if (!repo.isFork()) {
-						String branchesUrl = String.format("%s/repos/%s/%s/branches", gitHubApiUrl, username,
-								repo.getName(), repositories);
-						Branch[] branches = restTemplate.getForObject(branchesUrl, Branch[].class);
-						repo.setBranches((branches != null) ? List.of(branches) : new ArrayList<>());
-						nonForkRepositories.add(repo);
-					}
-				}
-			}
-
-			return nonForkRepositories;
+			return Arrays.stream(repositories).filter(repo -> !repo.isFork()).peek(repo -> {
+				String branchesUrl = String.format("%s/repos/%s/%s/branches", gitHubApiUrl, username, repo.getName());
+				Branch[] branches = restTemplate.getForObject(branchesUrl, Branch[].class);
+				repo.setBranches(Arrays.asList(branches));
+			}).collect(Collectors.toList());
 
 		} catch (HttpClientErrorException.NotFound e) {
 			throw new UsernameNotFoundException("User not found", e);

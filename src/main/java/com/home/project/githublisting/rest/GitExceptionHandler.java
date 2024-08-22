@@ -26,5 +26,5 @@ public class GitExceptionHandler {
 		errorResponse.put("message", ex.getMessage());
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
-	
+
 }
