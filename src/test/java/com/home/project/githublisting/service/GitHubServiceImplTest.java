@@ -91,12 +91,12 @@ class GitHubServiceImplTest {
 		Branch[] branches = new Branch[] {};
 		Repository[] repositories = new Repository[] {
 				new Repository("repoNonFork", owner, false, Arrays.asList(branches)) };
-		
+
 		Mockito.when(restTemplate.getForObject(anyString(), Mockito.eq(Repository[].class))).thenReturn(repositories);
 		Mockito.when(restTemplate.getForObject(anyString(), Mockito.eq(Branch[].class))).thenReturn(branches);
-		
+
 		List<Repository> result = gitHubService.getRepositories(userName);
-		
+
 		assertNotNull(result);
 		assertEquals(result.size(), 1);
 		assertEquals(result.get(0).getName(), "repoNonFork");
@@ -105,13 +105,13 @@ class GitHubServiceImplTest {
 		assertEquals(result.get(0).getBranches().size(), 0);
 
 	}
-	
+
 	@Test
 	public void testGetRepositories_UsernameNotFound() {
 
 		// Simulate a 404 response from the GitHub API
 		Mockito.when(restTemplate.getForObject(anyString(), Mockito.eq(Repository[].class)))
-				.thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
+				.thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "User not found", null, null, null));
 
 		UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class, () -> {
 			gitHubService.getRepositories("nonExistingUser");
@@ -119,5 +119,5 @@ class GitHubServiceImplTest {
 
 		assertEquals("User not found", exception.getMessage());
 	}
-	
+
 }
