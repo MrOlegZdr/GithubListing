@@ -37,11 +37,11 @@ class GitHubControllerTest {
 	public void setUp() {
 		// Set Up mock data for the test
 		Branch branch = new Branch("main", new Commit("asdf1234"));
-		List<Branch> branchs = new ArrayList<Branch>();
-		branchs.add(branch);
+		List<Branch> branches = new ArrayList<Branch>();
+		branches.add(branch);
 
 		Owner owner = new Owner("testOwner");
-		Repository repo = new Repository("testRepo", owner, false, branchs);
+		Repository repo = new Repository("testRepo", owner, false, branches);
 
 		repositories = new ArrayList<Repository>();
 		repositories.add(repo);
