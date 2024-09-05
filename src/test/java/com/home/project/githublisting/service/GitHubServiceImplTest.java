@@ -14,11 +14,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import com.home.project.githublisting.exception.UsernameNotFoundException;
 import com.home.project.githublisting.model.Branch;
 import com.home.project.githublisting.model.Commit;
 import com.home.project.githublisting.model.Owner;
 import com.home.project.githublisting.model.Repository;
-import com.home.project.githublisting.rest.UsernameNotFoundException;
 
 class GitHubServiceImplTest {
 

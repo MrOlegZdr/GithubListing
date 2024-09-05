@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import com.home.project.githublisting.exception.UsernameNotFoundException;
 import com.home.project.githublisting.model.Branch;
 import com.home.project.githublisting.model.Commit;
 import com.home.project.githublisting.model.Owner;

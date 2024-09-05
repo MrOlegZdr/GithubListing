@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import com.home.project.githublisting.exception.UsernameNotFoundException;
 import com.home.project.githublisting.model.Branch;
 import com.home.project.githublisting.model.Repository;
-import com.home.project.githublisting.rest.UsernameNotFoundException;
 
 @Service
 public class GitHubServiceImpl implements GitHubService {

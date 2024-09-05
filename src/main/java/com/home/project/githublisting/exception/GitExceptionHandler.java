@@ -1,4 +1,4 @@
-package com.home.project.githublisting.rest;
+package com.home.project.githublisting.exception;
 
 import java.util.HashMap;
 import java.util.Map;
