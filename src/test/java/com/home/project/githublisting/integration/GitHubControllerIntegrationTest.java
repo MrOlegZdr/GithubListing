@@ -50,23 +50,57 @@ class GitHubControllerIntegrationTest {
 
 		// WireMock setup for GitHub Repositories API
 		stubFor(get(urlPathEqualTo("/users/validUser/repos"))
-				.willReturn(aResponse().withStatus(HttpStatus.OK.value())
-				.withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-				.withBody(responseBodyRepo)));
+				.willReturn(aResponse()
+						.withStatus(HttpStatus.OK.value())
+						.withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+						.withBody(responseBodyRepo)));
 
 		// WireMock setup for GitHub Branches API
 		stubFor(get(urlEqualTo("/repos/validUser/test-repo/branches"))
-				.willReturn(aResponse().withStatus(HttpStatus.OK.value())
-				.withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-				.withBody(responseBodyBranch)));
+				.willReturn(aResponse()
+						.withStatus(HttpStatus.OK.value())
+						.withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+						.withBody(responseBodyBranch)));
 
 		mockMvc.perform(
 				get("/api/github/repositories/{username}", "validUser").header(HttpHeaders.ACCEPT, "application/json"))
-				.andExpect(status().isOk()).andExpect(jsonPath("$[0].name").value("test-repo"))
-				.andExpect(jsonPath("$[0].owner.login").value("validUser"))
-				.andExpect(jsonPath("$[0].branches[0].name").value("main"))
-				.andExpect(jsonPath("$[0].branches[0].commit.sha").value("abcd1234"));
+		.andExpect(status().isOk()).andExpect(jsonPath("$[0].name").value("test-repo"))
+		.andExpect(jsonPath("$[0].owner.login").value("validUser"))
+		.andExpect(jsonPath("$[0].branches[0].name").value("main"))
+		.andExpect(jsonPath("$[0].branches[0].commit.sha").value("abcd1234"));
 
 	}
 
+	@Test
+	@DisplayName("Integration test for non-existing GitHub user")
+	public void testGetUserRepositories_UserNotFound() throws Exception {
+		// WireMock setup for GitHub User Not Found (404)
+		stubFor(get(urlPathEqualTo("/users/nonExistingUser/repos"))
+				.willReturn(aResponse().withStatus(HttpStatus.NOT_FOUND.value())
+						.withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+						.withBody("{\"message\": \"Not Found\", \"documentation_url\": \"https://developer.github.com/v3\"}")));
+
+		// Perform the GET request using MockMvc
+		mockMvc.perform(get("/api/github/repositories/{username}", "nonExistingUser")
+				.header(HttpHeaders.ACCEPT, "application/json"))
+		.andExpect(status().isNotFound())
+		.andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
+		.andExpect(jsonPath("$.message").value("User not found"));
+	}
+
+	@Test
+	@DisplayName("Integration test for user with no repositories")
+	public void testGetUserRepositories_UserHasNoRepositories() throws Exception {
+		// WireMock setup for GitHub API returning an empty list of repositories
+		stubFor(get(urlPathEqualTo("/users/userWithNoRepos/repos"))
+				.willReturn(aResponse().withStatus(HttpStatus.OK.value())
+						.withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+						.withBody("[]")));
+
+		mockMvc.perform(get("/api/github/repositories/{username}", "userWithNoRepos")
+				.header(HttpHeaders.ACCEPT, "application/json"))
+		.andExpect(status().isOk())
+		.andExpect(jsonPath("$").isArray())
+		.andExpect(jsonPath("$").isEmpty());
+	}
 }
